@@ -9,7 +9,7 @@ export const addTodos = (todo) =>{
 }
 export const markDone = (id) =>{
     return{
-        type:Mark_Done,
+        type:MARK_DONE,
         payload:id
     }
 }

@@ -1,10 +1,15 @@
 import React from 'react'
 import {Button, Modal, Form, FormGroup, ModalFooter} from "react-bootstrap"
 import { useState } from 'react'
+import {addTodos} from '../../store/actions/TodoAction'
+import {connect} from "react-redux"
 
-
-const AddTodo = () => {
+const AddTodo = (props) => {
     const [modal, setModal] = useState(false)
+    const [task, setTask] = useState({
+        title: '',
+        description: ''
+    })
   const handleShow = () =>{
       setModal(true)
   }
@@ -12,12 +17,30 @@ const AddTodo = () => {
   const handleClose = () => {
       setModal(false)
   }
+  const handleChange = (e) => {
+      setTask({
+          ...task,
+          [e.target.name]:e.target.value
+      })
+      
+  }
+  const handleSubmit = (e) => {
+      e.preventDefault()
+      let id = parseInt(Date.now())
+      const todo = {
+          ...task,
+          isComplete:false,
+          id:id
+      }
+      props.addTodos(todo)
+      setModal(false)
+  }
   return (
     <div>
         <Button onClick={handleShow}>Nauja uzduotis</Button>
         <Modal show={modal} onHide={handleClose}>
             <Modal.Header>Uzduoties sukurimas</Modal.Header>
-            <Form>
+            <Form onSubmit={handleSubmit}>
             <Modal.Body>
              
                    <Form.Group>
@@ -25,6 +48,8 @@ const AddTodo = () => {
                        <Form.Control
                        type="text"
                        name="title"
+                       value={task.title}
+                       onChange={handleChange}
 
                        />
                    </Form.Group>
@@ -33,6 +58,8 @@ const AddTodo = () => {
                        <Form.Control
                        type="textarea"
                        name="description"
+                       value={task.description}
+                       onChange={handleChange}
                        
                        />
                    </Form.Group>
@@ -48,4 +75,4 @@ const AddTodo = () => {
   )
 }
 
-export default AddTodo
+export default connect(null, {addTodos}) (AddTodo)
